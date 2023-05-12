@@ -3,3 +3,5 @@ requests
 requests_ntlm
 pandas
 bs4
+lxml
+numpy
