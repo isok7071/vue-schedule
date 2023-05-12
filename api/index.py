@@ -5,6 +5,15 @@ import requests
 from requests_ntlm import HttpNtlmAuth
 from bs4 import BeautifulSoup
 import pandas as pd
+import parse
+
+username = '10190275'
+password = 'QctW9wezkj'
+
+PetroScheduleTypes = parse.PetroSchedule(username, password)
+
+PetroScheduleTypes.saveByGroup()
+
 
 app = Flask(__name__, static_folder='templates/assets')
 
@@ -153,8 +162,7 @@ class PetroChanges:
 
 @app.route('/')
 def home():
-    username = '10190275'
-    password = 'QctW9wezkj'
+
     replacements_url = r"https://portal.petrocollege.ru/_api/Web/Lists/GetByTitle('Замены')/Items?$top=10&$orderby=Id desc"    
     date = datetime.datetime.today()
     date_formatted = date.strftime('%d%m%Y')
@@ -165,7 +173,40 @@ def home():
 
 @app.route('/about')
 def about():
-    return 'About'
+    file = 'raspisaniye.xlsx'
+    xl = pd.read_excel(file)
+    raspisaniye = pd.DataFrame(xl, columns=['10-30'])[0:]
+    return formatDf(raspisaniye[0:6])
 
+def formatDf(datafr):
+        """Функция форматирующая DataFrame,убирает ненужную итнформацию
+
+        Args:
+            datafr : Получаемый датафрейм
+
+        Returns:
+            formatted_str (string): Возвращает строку готовую для вывода
+        """
+        # преобразуем датафрейм в html, для того чтобы убрать пустые пространство в строках
+        try:
+            html = datafr.to_html(index=False)
+            soup = BeautifulSoup(html, 'lxml')
+            # Выбор всех строк полученной таблицы парсером
+            table_rows = soup.find_all("tr")
+
+            # Форматирование полученных строк и создание результирующей строки
+            formatted_str = ""
+            for tr_row in table_rows:
+                formatted_str += tr_row.text.replace(
+                    "NaN", "Нет пары").replace("\\n", "\n")
+            return formatted_str
+
+        except:
+            # Форматирование на случай если не парсер не сработает
+            formatted_str = datafr.to_string(index=False).replace(" ", "").replace("NaN", "Нет пары").replace("\n", "\n\n").replace(
+                "\\n", "\n")
+            formatted_str = re.sub("([А-Я])", " \\1", str)
+            formatted_strtr = re.sub(" С Д О", "СДО", str)
+            return formatted_str
 if __name__ == '__main__': 
    app.run(debug = True) 
