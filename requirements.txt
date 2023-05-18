@@ -1,8 +1,0 @@
-Flask==2.2.2
-requests
-requests_ntlm
-pandas
-bs4
-lxml
-numpy
-openpyxl
