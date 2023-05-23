@@ -30,7 +30,7 @@ import axios from 'axios';
 let groups = ref([]);
 
 async function getGroups(){
-    const groupsUrl = 'http://petrovsky-bot.ru:12100/getGroups'
+    const groupsUrl = 'https://petrovsky-bot.ru:12100/getGroups'
     let result = await axios.get(groupsUrl)
     groups.value = result.data
   }
