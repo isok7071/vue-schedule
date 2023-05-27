@@ -30,7 +30,7 @@ import axios from 'axios';
 let groups = ref([]);
 
 async function getGroups(){
-    const groupsUrl = 'http://petrovsky-bot.ru:12100/getGroups'
+    const groupsUrl = 'https://router-mocha.vercel.app/getGroups'
     let result = await axios.get(groupsUrl)
     groups.value = result.data
   }
@@ -39,7 +39,7 @@ async function getGroups(){
 onMounted( ()=>{
   getGroups();
 
-// fetch('http://petrovsky-bot.ru:12100/getByGroup')
+// fetch('https://router-mocha.vercel.app/getAllScheduleByGroup')
 // .then(response => response.json())
 // .then(data => console.log(data));
 
