@@ -9,30 +9,76 @@
             selected-class="text-primary"
             column
           >
-            <div
+            <template
               v-for="id, group in groups"
               :key="id"
             >
-              <v-expansion-panels>
-                <v-chip
-                  filter
-                  @group:selected="toggleSelected(group)"
-                >
-                  {{ group }}
-                </v-chip>
-                <v-expansion-panel
-                  v-if="isSelected == group"
-                  title="Title"
-                >
-                <div 
-                  v-for="para, shcId in allScheduleByGroup"
+
+              <v-chip
+                filter
+                @group:selected="toggleSelected(group)"
+              >
+                {{ group }}
+              </v-chip>
+            </template>
+            <div ref="expPanel"></div>
+            <v-expansion-panels>
+              <v-expansion-panel
+                v-if="isSelected"
+                :title="selectedGroup"
+              >
+              <h3>ЧИСЛИТЕЛЬ</h3>
+                <template
+                  v-for="week, shcId in allScheduleByGroupChislitel"
                   :key="shcId"
                 >
-                {{ para }}
-              </div>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </div>
+                  ДЕНЬ НЕДЕЛИ
+                  <template
+                    v-for="day, group in week"
+                    :key="group"
+                  >
+                    <template 
+                      v-for="d, id in day"
+                      :key="id"
+                    >
+                      <div v-if="d == ''">
+                        Нет пары
+                      </div>
+                      <div>
+                        {{ d }}
+                      </div>
+                    </template>
+                    <v-divider :thickness="10"></v-divider>
+                  </template>
+                </template>
+
+                <h3>ЗНАМЕНАТЕЛЬ</h3>
+
+                <template
+                  v-for="week, shcId in allScheduleByGroupChislitel"
+                  :key="shcId"
+                >
+                  ДЕНЬ НЕДЕЛИ
+                  <template
+                    v-for="day, group in week"
+                    :key="group"
+                  >
+                    <template 
+                      v-for="d, id in day"
+                      :key="id"
+                    >
+                      <div v-if="d == ''">
+                        Нет пары
+                      </div>
+                      <div>
+                        {{ d }}
+                      </div>
+                    </template>
+                    <v-divider :thickness="10"></v-divider>
+                  </template>
+                </template>
+              </v-expansion-panel>
+            </v-expansion-panels>
 
           </v-chip-group>
         </v-col>
@@ -47,25 +93,156 @@ import axios from 'axios';
 let groups = ref([]);
 let selectedGroup = ref();
 let isSelected = ref();
-let allScheduleByGroup = ref();
+let allScheduleByGroupChislitel = ref();
+let allScheduleByGroupZnamenatel = ref()
 
-class ScheduleApi{
+const expPanel = ref()
+
+class ScheduleApi {
   apiUrl = 'https://router-mocha.vercel.app/';
   getGroupsUrl = 'getGroups';
   getAllScheduleByGroupUrl = 'getAllScheduleByGroup';
 
   async getGroups() {
-  let result = await axios.get(this.apiUrl+this.getGroupsUrl)
-  groups.value = result.data
+    let result = await axios.get(this.apiUrl + this.getGroupsUrl)
+    groups.value = result.data
+  }
+  async getAllScheduleByGroup<T>(group: T) {
+    let result: allSchedule = await axios.get(this.apiUrl + this.getAllScheduleByGroupUrl, {
+      params: { 'group': group }
+    })
+    allScheduleByGroupChislitel.value = result.data?.chislit
+    allScheduleByGroupZnamenatel.value = result.data?.znamenat
+  }
 }
-async getAllScheduleByGroup<T>(group: T) {
-  let result = await axios.get(this.apiUrl+this.getAllScheduleByGroupUrl,{
-    params: {'group':group}
-  })
-  allScheduleByGroup.value = result.data.chislit.friday[group]
+type allSchedule = {
+  'data'?: {
+    'chislit': {
+      '0': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+      '1': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+      '2': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+      '3': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+      '4': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+      '5': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+    },
+    'znamenat': {
+      '0': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+      '1': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+      '2': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+      '3': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+      '4': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+      '5': {
+        'group': {
+          '0': ''
+          '1': ''
+          '2': ''
+          '3': ''
+          '4': ''
+          '5': ''
+        }
+      }
+    }
+  }
 }
-}
-
 const scheduleApi = new ScheduleApi()
 
 function toggleSelected<T>(group: T) {
@@ -74,10 +251,11 @@ function toggleSelected<T>(group: T) {
     isSelected.value = false;
     return false;
   }
-  scheduleApi.getAllScheduleByGroup(group);
 
   selectedGroup.value = group;
-  isSelected.value = group;
+  scheduleApi.getAllScheduleByGroup(group);
+  isSelected.value = true;
+  expPanel.value.scrollIntoView({ behavior: "smooth" });
 }
 
 onBeforeMount(() => {
