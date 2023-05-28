@@ -27,7 +27,13 @@
                 v-if="isSelected"
                 :title="selectedGroup"
               >
-              <h3>ЧИСЛИТЕЛЬ</h3>
+              <v-progress-linear
+                indeterminate
+                color="primary"
+                :height="10"
+                v-if="isLoading"
+              ></v-progress-linear>
+                <h3>ЧИСЛИТЕЛЬ</h3>
                 <template
                   v-for="week, shcId in allScheduleByGroupChislitel"
                   :key="shcId"
@@ -37,7 +43,7 @@
                     v-for="day, group in week"
                     :key="group"
                   >
-                    <template 
+                    <template
                       v-for="d, id in day"
                       :key="id"
                     >
@@ -63,7 +69,7 @@
                     v-for="day, group in week"
                     :key="group"
                   >
-                    <template 
+                    <template
                       v-for="d, id in day"
                       :key="id"
                     >
@@ -93,6 +99,7 @@ import axios from 'axios';
 let groups = ref([]);
 let selectedGroup = ref();
 let isSelected = ref();
+const isLoading = ref(false);
 let allScheduleByGroupChislitel = ref();
 let allScheduleByGroupZnamenatel = ref()
 
@@ -246,6 +253,8 @@ type allSchedule = {
 const scheduleApi = new ScheduleApi()
 
 function toggleSelected<T>(group: T) {
+  isLoading.value = true
+
   if (selectedGroup.value == group) {
     selectedGroup.value = null;
     isSelected.value = false;
@@ -256,6 +265,9 @@ function toggleSelected<T>(group: T) {
   scheduleApi.getAllScheduleByGroup(group);
   isSelected.value = true;
   expPanel.value.scrollIntoView({ behavior: "smooth" });
+  setTimeout(()=>{
+    isLoading.value = false
+  },500)
 }
 
 onBeforeMount(() => {
