@@ -4,7 +4,16 @@
 
       <v-row class="d-flex align-center justify-center">
         <v-col cols="auto">
-          <h1>Hello</h1>
+          <h1>Расписание по группе</h1>
+          
+          <v-progress-circular
+            indeterminate
+            color="primary"
+            v-if="isGroupsLoading"
+            :size="100"
+            :width="10"
+          ></v-progress-circular>
+
           <v-chip-group
             selected-class="text-primary"
             column
@@ -21,18 +30,19 @@
                 {{ group }}
               </v-chip>
             </template>
+            
             <div ref="expPanel"></div>
             <v-expansion-panels>
               <v-expansion-panel
                 v-if="isSelected"
                 :title="selectedGroup"
               >
-              <v-progress-linear
-                indeterminate
-                color="primary"
-                :height="10"
-                v-if="isLoading"
-              ></v-progress-linear>
+                <v-progress-linear
+                  indeterminate
+                  color="primary"
+                  :height="10"
+                  v-if="isLoading"
+                ></v-progress-linear>
                 <h3>ЧИСЛИТЕЛЬ</h3>
                 <template
                   v-for="week, shcId in allScheduleByGroupChislitel"
@@ -57,11 +67,11 @@
                     <v-divider :thickness="10"></v-divider>
                   </template>
                 </template>
-
+                
                 <h3>ЗНАМЕНАТЕЛЬ</h3>
 
                 <template
-                  v-for="week, shcId in allScheduleByGroupChislitel"
+                  v-for="week, shcId in allScheduleByGroupZnamenatel"
                   :key="shcId"
                 >
                   ДЕНЬ НЕДЕЛИ
@@ -100,6 +110,8 @@ let groups = ref([]);
 let selectedGroup = ref();
 let isSelected = ref();
 const isLoading = ref(false);
+const isGroupsLoading = ref(true);
+
 let allScheduleByGroupChislitel = ref();
 let allScheduleByGroupZnamenatel = ref()
 
@@ -112,6 +124,7 @@ class ScheduleApi {
 
   async getGroups() {
     let result = await axios.get(this.apiUrl + this.getGroupsUrl)
+    isGroupsLoading.value = false;
     groups.value = result.data
   }
   async getAllScheduleByGroup<T>(group: T) {
@@ -119,7 +132,7 @@ class ScheduleApi {
       params: { 'group': group }
     })
     allScheduleByGroupChislitel.value = result.data?.chislit
-    allScheduleByGroupZnamenatel.value = result.data?.znamenat
+    allScheduleByGroupZnamenatel.value = result.data?.znamenatel
   }
 }
 type allSchedule = {
@@ -186,7 +199,7 @@ type allSchedule = {
         }
       }
     },
-    'znamenat': {
+    'znamenatel': {
       '0': {
         'group': {
           '0': ''
@@ -260,14 +273,15 @@ function toggleSelected<T>(group: T) {
     isSelected.value = false;
     return false;
   }
-
+  allScheduleByGroupChislitel.value = {}
+  allScheduleByGroupZnamenatel.value = {}
   selectedGroup.value = group;
   scheduleApi.getAllScheduleByGroup(group);
   isSelected.value = true;
   expPanel.value.scrollIntoView({ behavior: "smooth" });
-  setTimeout(()=>{
+  setTimeout(() => {
     isLoading.value = false
-  },500)
+  }, 500)
 }
 
 onBeforeMount(() => {
