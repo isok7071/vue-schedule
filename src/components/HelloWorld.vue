@@ -31,8 +31,9 @@
               </v-chip>
             </template>
             
-            <div ref="expPanel"></div>
+           
             <v-expansion-panels>
+              <div ref="expPanel"></div>
               <v-expansion-panel
                 v-if="isSelected"
                 :title="selectedGroup"
@@ -288,3 +289,9 @@ onBeforeMount(() => {
   scheduleApi.getGroups();
 })
 </script>
+
+<style>
+body{
+  height: 150vh;
+}
+</style>
