@@ -119,9 +119,9 @@ let allScheduleByGroupZnamenatel = ref()
 const expPanel = ref()
 
 class ScheduleApi {
-  apiUrl = 'https://router-mocha.vercel.app/';
+  apiUrl = 'https://bot.imsokserver70.keenetic.link/';
   getGroupsUrl = 'getGroups';
-  getAllScheduleByGroupUrl = 'getAllScheduleByGroup';
+  getAllScheduleByGroupUrl = 'getByGroup';
 
   async getGroups() {
     let result = await axios.get(this.apiUrl + this.getGroupsUrl)
