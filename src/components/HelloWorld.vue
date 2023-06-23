@@ -5,7 +5,7 @@
       <v-row class="d-flex align-center justify-center">
         <v-col cols="auto">
           <h1>Расписание по группе</h1>
-          
+
           <v-progress-circular
             indeterminate
             color="primary"
@@ -30,77 +30,60 @@
                 {{ group }}
               </v-chip>
             </template>
-            
-           
-            <v-expansion-panels>
-              <div ref="expPanel"></div>
-              <v-expansion-panel
-                v-if="isSelected"
-                :title="selectedGroup"
-              >
-                <v-progress-linear
-                  indeterminate
-                  color="primary"
-                  :height="10"
-                  v-if="isLoading"
-                ></v-progress-linear>
-                <h3>ЧИСЛИТЕЛЬ</h3>
-                <template
-                  v-for="week, shcId in allScheduleByGroupChislitel"
-                  :key="shcId"
-                >
-                  ДЕНЬ НЕДЕЛИ
-                  <template
-                    v-for="day, group in week"
-                    :key="group"
-                  >
-                    <template
-                      v-for="d, id in day"
-                      :key="id"
-                    >
-                      <div v-if="d == ''">
-                        Нет пары
-                      </div>
-                      <div>
-                        {{ d }}
-                      </div>
-                    </template>
-                    <v-divider :thickness="10"></v-divider>
-                  </template>
-                </template>
-                
-                <h3>ЗНАМЕНАТЕЛЬ</h3>
 
-                <template
-                  v-for="week, shcId in allScheduleByGroupZnamenatel"
-                  :key="shcId"
-                >
-                  ДЕНЬ НЕДЕЛИ
-                  <template
-                    v-for="day, group in week"
-                    :key="group"
-                  >
-                    <template
-                      v-for="d, id in day"
-                      :key="id"
-                    >
-                      <div v-if="d == ''">
-                        Нет пары
-                      </div>
-                      <div>
-                        {{ d }}
-                      </div>
-                    </template>
-                    <v-divider :thickness="10"></v-divider>
-                  </template>
-                </template>
-              </v-expansion-panel>
-            </v-expansion-panels>
 
+
+            <v-progress-linear
+              indeterminate
+              color="primary"
+              :height="10"
+              v-if="isLoading"
+            ></v-progress-linear>
           </v-chip-group>
+          <div ref="anchor">
+          </div>
+          <template v-if="isSelected">
+            <template
+              v-for="schedule, shcId in allScheduleByGroup"
+              :key="shcId"
+            >
+
+              <template
+                v-for="dayId, day in schedule"
+                :key="dayId"
+              >
+                <h3>{{ day }}</h3>
+                <template
+                  v-for="groupRasp, group in dayId"
+                  :key="group"
+                >
+                  <template
+                    v-for="para, paraId in groupRasp"
+                    :key="paraId"
+                  >
+                    <div v-if="para == ''">
+                      Нет пары
+                    </div>
+                    <div v-else>
+                      {{ para }}
+                    </div>
+                    <v-divider :thickness="1"></v-divider>
+
+
+                  </template>
+                </template>
+
+                <v-divider :thickness="10"></v-divider>
+              </template>
+            </template>
+          </template>
+
         </v-col>
+
       </v-row>
+
     </v-responsive>
+
   </v-container>
 </template>
 
@@ -113,10 +96,9 @@ let isSelected = ref();
 const isLoading = ref(false);
 const isGroupsLoading = ref(true);
 
-let allScheduleByGroupChislitel = ref();
-let allScheduleByGroupZnamenatel = ref()
+let allScheduleByGroup = ref();
 
-const expPanel = ref()
+const anchor = ref()
 
 class ScheduleApi {
   apiUrl = 'https://bot.imsokserver70.keenetic.link/';
@@ -132,135 +114,37 @@ class ScheduleApi {
     let result: allSchedule = await axios.get(this.apiUrl + this.getAllScheduleByGroupUrl, {
       params: { 'group': group }
     })
-    allScheduleByGroupChislitel.value = result.data?.chislit
-    allScheduleByGroupZnamenatel.value = result.data?.znamenatel
+    allScheduleByGroup.value = result.data
   }
 }
 type allSchedule = {
   'data'?: {
-    'chislit': {
-      '0': {
+    '0': {
+      'today': {
         'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
-      '1': {
-        'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
-      '2': {
-        'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
-      '3': {
-        'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
-      '4': {
-        'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
-      '5': {
-        'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
+          '0': '',
+          '1': '',
+          '2': '',
+          '3': '',
+          '4': '',
+          '5': '',
+          '6': '',
+        },
+      },
     },
-    'znamenatel': {
-      '0': {
+    '1': {
+      'next_day': {
         'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
-      '1': {
-        'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
-      '2': {
-        'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
-      '3': {
-        'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
-      '4': {
-        'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
-      '5': {
-        'group': {
-          '0': ''
-          '1': ''
-          '2': ''
-          '3': ''
-          '4': ''
-          '5': ''
-        }
-      }
+          '0': '',
+          '1': '',
+          '2': '',
+          '3': '',
+          '4': '',
+          '5': '',
+          '6': '',
+        },
+      },
+
     }
   }
 }
@@ -270,16 +154,17 @@ function toggleSelected<T>(group: T) {
   isLoading.value = true
 
   if (selectedGroup.value == group) {
-    selectedGroup.value = null;
+    selectedGroup.value = '';
     isSelected.value = false;
+    isLoading.value = false
     return false;
   }
-  allScheduleByGroupChislitel.value = {}
-  allScheduleByGroupZnamenatel.value = {}
+  selectedGroup.value = '';
+  allScheduleByGroup.value = {}
   selectedGroup.value = group;
   scheduleApi.getAllScheduleByGroup(group);
   isSelected.value = true;
-  expPanel.value.scrollIntoView({ behavior: "smooth" });
+  anchor.value.scrollIntoView({ behavior: "smooth" });
   setTimeout(() => {
     isLoading.value = false
   }, 500)
@@ -291,7 +176,7 @@ onBeforeMount(() => {
 </script>
 
 <style>
-body{
+body {
   height: 150vh;
 }
 </style>
