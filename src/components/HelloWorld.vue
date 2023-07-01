@@ -1,9 +1,8 @@
 <template>
   <v-container class="fill-height">
-    <v-responsive class="d-flex align-center text-center fill-height">
-
       <v-row class="d-flex align-center justify-center">
         <v-col cols="auto">
+        <v-container class="text-center">
           <h1>Расписание по группе</h1>
 
           <v-progress-circular
@@ -12,8 +11,9 @@
             v-if="isGroupsLoading"
             :size="100"
             :width="10"
+            
           ></v-progress-circular>
-
+        </v-container>
           <v-chip-group
             selected-class="text-primary"
             column
@@ -40,49 +40,66 @@
               v-if="isLoading"
             ></v-progress-linear>
           </v-chip-group>
-          <div ref="anchor">
+          <div
+            class="mt-10"
+            ref="anchor"
+          >
           </div>
           <template v-if="isSelected">
-            <template
-              v-for="schedule, shcId in allScheduleByGroup"
-              :key="shcId"
-            >
-
+            <v-row>
               <template
-                v-for="dayId, day in schedule"
-                :key="dayId"
+                v-for="schedule, shcId in allScheduleByGroup"
+                :key="shcId"
               >
-                <h3>{{ day }}</h3>
-                <template
-                  v-for="groupRasp, group in dayId"
-                  :key="group"
-                >
-                  <template
-                    v-for="para, paraId in groupRasp"
-                    :key="paraId"
+                <v-col>
+                  <v-card
+                    v-for="dayId, day in schedule"
+                    :key="dayId"
+                    height="100%"
+                    class="pt-4 rounded-lg"
                   >
-                    <div v-if="para == ''">
-                      Нет пары
-                    </div>
-                    <div v-else>
-                      {{ para }}
-                    </div>
-                    <v-divider :thickness="1"></v-divider>
+                    <v-card-title class="text-primary">{{ day }}</v-card-title>
+                    <template
+                      v-for="groupRasp, group in dayId"
+                      :key="group"
+                    >
+                      <ol>
+                        <template
+                          v-for="para, paraId in groupRasp"
+                          :key="paraId"
+                        >
+                          <v-card-text
+                            class="ml-3"
+                            v-if="para == ''"
+                          >
+                            <li> Нет пары</li>
+                          </v-card-text>
+                          <v-card-text
+                            class="ml-3"
+                            v-else
+                          >
+                            <li>{{ para }}</li>
+                          </v-card-text>
+                          <v-divider
+                            :thickness="2"
+                            color="primary"
+                          ></v-divider>
+                        </template>
+                      </ol>
 
+                    </template>
 
-                  </template>
-                </template>
-
-                <v-divider :thickness="10"></v-divider>
+                  </v-card>
+                </v-col>
               </template>
-            </template>
+            </v-row>
+
           </template>
 
         </v-col>
 
       </v-row>
 
-    </v-responsive>
 
   </v-container>
 </template>
